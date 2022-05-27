@@ -1,0 +1,21 @@
+{
+    "rules": {
+        "eqeqeq": "error",
+        "array-bracket-spacing": "warn",
+        "arrow-spacing": "warn",
+        "arrow-parens": "warn",
+        "comma-spacing": "warn",
+        "camelcase": "warn",
+        "prefer-const": "warn",
+        "no-const-assign": "error",
+        "complexity": "warn",
+        "semi": "warn"
+    },
+    "parserOptions": {
+        "ecmaVersion": 2021
+    },
+
+    "env": {
+        "es6": true
+    }
+}
