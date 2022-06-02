@@ -43,12 +43,12 @@ firebase.init = (testing) => {
 
 	// Init Firebase
 	const app = initializeApp(firebase.config);
-	const database = getDatabase(app);
+	firebase.database = getDatabase(app);
 	// Init regs
-	firebase.leaderboardRef = ref(database, 'Leaderboard');
-	firebase.blacklistRef = ref(database, 'blacklist');
-	firebase.usersRef = ref(database, 'test');
-	firebase.totalGamesPlayedRef = ref(database, 'TotalGamesPlayed');
+	firebase.leaderboardRef = ref(firebase.database, 'Leaderboard');
+	firebase.blacklistRef = ref(firebase.database, 'blacklist');
+	firebase.usersRef = ref(firebase.database, 'test');
+	firebase.totalGamesPlayedRef = ref(firebase.database, 'TotalGamesPlayed');
 
 	console.log(`Initialized firebase (${testing ? 'testing' : 'prod'})`);
 };
@@ -72,6 +72,7 @@ firebase.updateLeaderboard = async (user) => {
 	const leaderboard = await firebase.getLeaderboard();
 	let updated = false;
 
+	// If the user is already in the leaderboard, update their score
 	for (const player of Object.values(leaderboard)) {
 		if (utils.compareUser(user, player)) {
 			player.score = user.score;
@@ -81,6 +82,7 @@ firebase.updateLeaderboard = async (user) => {
 		}
 	}
 
+	// else, add the user to the leaderboard
 	if (!updated) {
 		leaderboard.push({
 			id: user.id,
@@ -88,9 +90,11 @@ firebase.updateLeaderboard = async (user) => {
 			score: user.score,
 		});
 
+		// And sort to make sure the leaderboard is in order
 		leaderboard.sort((a, b) => b.score - a.score);
 	}
 
+	// Update the leaderboard
 	await set(firebase.leaderboardRef, leaderboard);
 };
 
@@ -115,6 +119,7 @@ firebase.getBlacklist = async () => {
 firebase.isUserBlacklisted = async (identifiers) => {
 	const blacklist = await firebase.getBlacklist();
 
+	// Check if a users id or name is blacklisted
 	for (const identifier of identifiers) {
 		if (Object.values(blacklist).includes(identifier)) {
 			return true;
@@ -142,6 +147,7 @@ firebase.getUsers = async () => {
 firebase.userExists = async (user) => {
 	const users = await firebase.getUsers();
 
+	// Go through each user and check if the user is the requested user
 	for (const [uid, player] of Object.entries(users)) {
 		if (utils.compareUser(user, player, uid)) {
 			return true;
@@ -210,11 +216,11 @@ firebase.incrementTotalGamesPlayed = async () => {
  */
 firebase.incrementDateGamesPlayed = async () => {
 	const date = utils.getDate();
-	const dateRef = ref(database, date);
+	const dateRef = ref(firebase.database, date);
 	const gamesPlayed = await get(dateRef);
 
 	if (!gamesPlayed.exists()) {
-		await set(child(firebase.dateGamesPlayedRef, date), 1);
+		await set(dateRef, 1);
 
 		return;
 	}

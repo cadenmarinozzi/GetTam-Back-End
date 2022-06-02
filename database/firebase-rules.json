@@ -1,0 +1,11 @@
+{
+    "rules": {
+        "Leaderboard": {
+            ".validate": "newData.exists() && newData.hasChildren() && newData.children.length == 3",
+            ".read": true
+        },
+        "TotalGamesPlayed": {
+
+        }
+    }
+}

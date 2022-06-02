@@ -86,7 +86,7 @@ app.post('/TotalGamesPlayed', async (req, res) => {
 		const requestIp = utils.getRequestIp(req);
 		const user = req.body;
 
-		if (!utils.verifyUserRequest(user) || !utils.verifyScore(user.score)) {
+		if (!utils.verifyUserRequest(user)) {
 			res.status(400).end('Bad Request');
 
 			return;

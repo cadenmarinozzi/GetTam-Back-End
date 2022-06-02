@@ -7,6 +7,7 @@ const utils = {};
  * @returns {string} The IP address.
  */
 utils.getRequestIp = (req) => {
+	// Get the IP address from the request headers.
 	return req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 };
 
@@ -48,6 +49,7 @@ utils.verifyScore = (score) => {
 };
 
 /**
+ * Compares two users and returns true if they are the same
  * @param {Object} user
  * @param {Object} otherUser
  * @param {string} uid
@@ -69,6 +71,7 @@ utils.getDate = () => {
 	const day = date.getDate().toString();
 	const month = date.getMonth().toString();
 
+	// mm-dd
 	return `${month}-${day}`;
 };
 
